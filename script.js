@@ -90,49 +90,88 @@ function loadDashboard() {
   callGAS('getDashboardData').then(data => {
     document.getElementById('content').innerHTML = `
       <div class="row g-4 mb-5">
-        <div class="col-md-3">
-          <div class="stat-card">
-            <p class="text-muted small fw-bold">TOTAL HADIR</p>
-            <h3>${data.totalHadir} <span class="badge bg-soft-success text-success fs-6" style="background: #dcfce7;">+12%</span></h3>
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="stat-card h-100">
+            <div class="text-center">
+              <i class="fas fa-user-check fa-2x mb-3" style="color: #00b894;"></i>
+              <p class="text-muted small fw-bold">TOTAL HADIR</p>
+              <h3>${data.totalHadir} <span class="badge bg-soft-success text-success fs-6" style="background: #dcfce7;">+12%</span></h3>
+            </div>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="stat-card">
-            <p class="text-muted small fw-bold">TERLAMBAT</p>
-            <h3>${data.totalSakit} <span class="badge bg-soft-danger text-danger fs-6" style="background: #fee2e2;">-2%</span></h3>
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="stat-card h-100">
+            <div class="text-center">
+              <i class="fas fa-clock fa-2x mb-3" style="color: #fdcb6e;"></i>
+              <p class="text-muted small fw-bold">TERLAMBAT</p>
+              <h3>${data.totalSakit} <span class="badge bg-soft-danger text-danger fs-6" style="background: #fee2e2;">-2%</span></h3>
+            </div>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="stat-card">
-            <p class="text-muted small fw-bold">SAKIT</p>
-            <h3>${data.totalSakit}</h3>
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="stat-card h-100">
+            <div class="text-center">
+              <i class="fas fa-user-times fa-2x mb-3" style="color: #e17055;"></i>
+              <p class="text-muted small fw-bold">SAKIT</p>
+              <h3>${data.totalSakit}</h3>
+            </div>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="stat-card">
-            <p class="text-muted small fw-bold">ALPA</p>
-            <h3>${data.totalAlpa}</h3>
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="stat-card h-100">
+            <div class="text-center">
+              <i class="fas fa-user-slash fa-2x mb-3" style="color: #d63031;"></i>
+              <p class="text-muted small fw-bold">ALPA</p>
+              <h3>${data.totalAlpa}</h3>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="table-container">
-        <div class="d-flex justify-content-between mb-4">
-          <h5>Top 10 Guru</h5>
+      <div class="row">
+        <div class="col-lg-6 mb-4">
+          <div class="table-container h-100">
+            <div class="d-flex justify-content-between mb-4">
+              <h5><i class="fas fa-chart-pie"></i> Statistik Kehadiran</h5>
+            </div>
+            <canvas id="attendanceChart"></canvas>
+          </div>
         </div>
-        <table class="table">
-          <thead class="table-light">
-            <tr>
-              <th>Nama</th>
-              <th>Hadir</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${data.ranking.map(g => `<tr><td>${g.nama}</td><td>${g.hadir}</td></tr>`).join('')}
-          </tbody>
-        </table>
+        <div class="col-lg-6 mb-4">
+          <div class="table-container h-100">
+            <div class="d-flex justify-content-between mb-4">
+              <h5><i class="fas fa-star"></i> Top 10 Guru</h5>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead class="table-light">
+                  <tr>
+                    <th>Nama</th>
+                    <th>Hadir</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${data.ranking.map(g => `<tr><td>${g.nama}</td><td>${g.hadir}</td></tr>`).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     `;
+
+    // Load Chart
+    const ctx = document.getElementById('attendanceChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Hadir', 'Sakit', 'Alpa'],
+        datasets: [{
+          data: [data.totalHadir, data.totalSakit, data.totalAlpa],
+          backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
+        }]
+      }
+    });
   }).catch(error => {
     document.getElementById('content').innerHTML = '<h1>Error loading dashboard</h1>';
     console.error(error);
@@ -144,21 +183,35 @@ function loadDatabase() {
     document.getElementById('content').innerHTML = `
       <div class="table-container">
         <div class="d-flex justify-content-between mb-4">
-          <h5>Database Guru/Staf</h5>
+          <h5><i class="fas fa-users"></i> Database Guru/Staf</h5>
+          <button class="btn btn-outline-primary btn-sm btn-custom">Tambah Baru</button>
         </div>
-        <table class="table">
-          <thead class="table-light">
-            <tr>
-              <th>ID</th>
-              <th>Nama</th>
-              <th>Jabatan</th>
-              <th>Asal Sekolah</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${data.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[12]}</td><td>${row[10]}</td></tr>`).join('')}
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Nama</th>
+                <th>Jabatan</th>
+                <th>Asal Sekolah</th>
+                <th>No. WA</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.map(row => `<tr>
+                <td>${row[0]}</td>
+                <td>${row[1]}</td>
+                <td>${row[12]}</td>
+                <td>${row[10]}</td>
+                <td>${row[8]}</td>
+                <td><span class="status-pill bg-success text-white">Aktif</span></td>
+                <td><button class="btn btn-sm btn-primary">Edit</button></td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
       </div>
     `;
   }).catch(error => {
