@@ -1,0 +1,113 @@
+:root {
+  --primary: #10b981;
+  --secondary: #3b82f6;
+  --dark-bg: #0f172a;
+  --sidebar-bg: #ffffff;
+  --glass: rgba(255, 255, 255, 0.8);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  overflow-x: hidden;
+}
+
+.sidebar {
+  height: 100vh;
+  width: 260px;
+  position: fixed;
+  background: var(--sidebar-bg);
+  border-right: 1px solid rgba(0,0,0,0.05);
+  padding: 2rem 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  color: #64748b;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  transition: all 0.2s;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  background: #f8fafc;
+  color: var(--primary);
+  transform: translateX(5px);
+}
+
+.nav-link.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+}
+
+.main-content {
+  margin-left: 260px;
+  padding: 2rem;
+  transition: all 0.3s;
+}
+
+.stat-card {
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+}
+
+h1, h2, h4 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+
+.welcome-text {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.btn-custom {
+  border-radius: 12px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-custom:active {
+  transform: scale(0.95);
+}
+
+.table-container {
+  background: white;
+  border-radius: 20px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.status-pill {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+#loader {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: white;
+  display: flex; justify-content: center; align-items: center;
+  z-index: 9999;
+}
