@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YPWI GAS App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #10b981;
+      --secondary: #3b82f6;
+      --dark-bg: #0f172a;
+      --sidebar-bg: #ffffff;
+      --glass: rgba(255, 255, 255, 0.8);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f1f5f9;
+      color: #1e293b;
+      overflow-x: hidden;
+    }
+
+    /* --- ANIMATED SIDEBAR --- */
+    .sidebar {
+      height: 100vh;
+      width: 260px;
+      position: fixed;
+      background: var(--sidebar-bg);
+      border-right: 1px solid rgba(0,0,0,0.05);
+      padding: 2rem 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      color: #64748b;
+      border-radius: 12px;
+      margin-bottom: 0.5rem;
+      transition: all 0.2s;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .nav-link:hover {
+      background: #f8fafc;
+      color: var(--primary);
+      transform: translateX(5px);
+    }
+
+    .nav-link.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+    }
+
+    /* --- GLASSMORPHISM CARDS --- */
+    .main-content {
+      margin-left: 260px;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+
+    .stat-card {
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 24px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+    }
+
+    /* --- TYPOGRAPHY --- */
+    h1, h2, h4 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+    }
+
+    .welcome-text {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    /* --- ANIMATED BUTTONS --- */
+    .btn-custom {
+      border-radius: 12px;
+      padding: 0.6rem 1.5rem;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-custom:active {
+      transform: scale(0.95);
+    }
+
+    /* --- TABLE STYLING --- */
+    .table-container {
+      background: white;
+      border-radius: 20px;
+      padding: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .status-pill {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    /* --- LOADING ANIMATION --- */
+    #loader {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: white;
+      display: flex; justify-content: center; align-items: center;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+  <div id="loader">
+    <div class="spinner-grow text-success" role="status"></div>
+  </div>
+
+  <div class="sidebar animate__animated animate__fadeInLeft">
+    <div class="d-flex align-items-center mb-5">
+      <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 10px; margin-right: 12px;"></div>
+      <h4 class="mb-0" style="color: var(--dark-bg);">YPWI Hub</h4>
+    </div>
+
+    <nav>
+      <a href="#" class="nav-link active" onclick="navigateTo('dashboard')">
+        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+      </a>
+      <a href="#" class="nav-link" onclick="navigateTo('database')">
+        <i class="fas fa-database me-2"></i>Data Guru
+      </a>
+      <a href="#" class="nav-link" onclick="navigateTo('payroll')">
+        <i class="fas fa-money-bill-wave me-2"></i>Payroll
+      </a>
+      <hr class="my-4" style="opacity: 0.1;">
+      <a href="#" class="nav-link text-danger" onclick="logout()">
+        <i class="fas fa-sign-out-alt me-2"></i>Logout
+      </a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header class="d-flex justify-content-between align-items-center mb-5 animate__animated animate__fadeInDown">
+      <div>
+        <h2 class="mb-0">Overview Real-time</h2>
+        <p class="welcome-text">Selamat bekerja, Admin Yayasan</p>
+      </div>
+      <div class="d-flex align-items-center">
+         <div class="text-end me-3">
+           <p class="mb-0 fw-bold">ID: 98231</p>
+           <p class="mb-0 welcome-text">Unit: YPWI LUTIM</p>
+         </div>
+         <div style="width: 50px; height: 50px; border-radius: 50%; background: #e2e8f0; border: 2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.1);"></div>
+      </div>
+    </header>
+
+    <div id="content" class="animate__animated animate__fadeIn">
+      <!-- Content will be loaded here -->
+    </div>
+  </div>
+
+  <script>
+    // Simulasi Loader
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loader').style.display = 'none';
+      }, 800);
+    });
+
+    function navigateTo(page) {
+      const viewport = document.getElementById('content');
+      viewport.classList.remove('animate__fadeIn');
+      viewport.classList.add('animate__fadeOut');
+
+      setTimeout(() => {
+        google.script.run.withSuccessHandler(function(html) {
+          viewport.innerHTML = html;
+          // Reload scripts if needed
+          var scripts = viewport.querySelectorAll('script');
+          scripts.forEach(function(script) {
+            if (script.src) {
+              var newScript = document.createElement('script');
+              newScript.src = script.src;
+              document.head.appendChild(newScript);
+            } else {
+              eval(script.textContent);
+            }
+          });
+          viewport.classList.remove('animate__fadeOut');
+          viewport.classList.add('animate__fadeIn');
+        }).getPageHtml(page);
+      }, 300);
+    }
+
+    function logout() {
+      google.script.run.logout();
+      window.location.href = '?page=auth';
+    }
+  </script>
+</body>
+</html>

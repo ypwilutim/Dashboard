@@ -1,0 +1,123 @@
+<div class="row g-4 mb-5 animate__animated animate__fadeInUp">
+  <div class="col-md-3">
+    <div class="stat-card">
+      <p class="text-muted small fw-bold">TOTAL HADIR</p>
+      <h3 id="totalHadir">0 <span class="badge bg-soft-success text-success fs-6" style="background: #dcfce7;">+12%</span></h3>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <p class="text-muted small fw-bold">TERLAMBAT</p>
+      <h3 id="totalSakit">0 <span class="badge bg-soft-danger text-danger fs-6" style="background: #fee2e2;">-2%</span></h3>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <p class="text-muted small fw-bold">SAKIT</p>
+      <h3 id="totalSakit2">0</h3>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <p class="text-muted small fw-bold">ALPA</p>
+      <h3 id="totalAlpa">0</h3>
+    </div>
+  </div>
+</div>
+
+<div id="app-viewport" class="animate__animated animate__fadeIn">
+  <div class="row">
+    <div class="col-lg-6 mb-4">
+      <div class="table-container">
+         <div class="d-flex justify-content-between mb-4">
+           <h5><i class="fas fa-chart-pie"></i> Statistik Kehadiran</h5>
+         </div>
+         <canvas id="attendanceChart"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+      <div class="table-container">
+         <div class="d-flex justify-content-between mb-4">
+           <h5><i class="fas fa-star"></i> Top 10 Guru</h5>
+         </div>
+         <div class="table-responsive">
+           <table class="table">
+             <thead class="table-light">
+               <tr>
+                 <th>Nama</th>
+                 <th>Hadir</th>
+               </tr>
+             </thead>
+             <tbody id="rankingTable">
+             </tbody>
+           </table>
+         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-container mt-4">
+     <div class="d-flex justify-content-between mb-4">
+       <h5>Aktivitas Terbaru</h5>
+       <button class="btn btn-outline-primary btn-sm btn-custom">Lihat Semua</button>
+     </div>
+     <table class="table">
+       <thead class="table-light">
+         <tr>
+           <th>Nama</th>
+           <th>Unit</th>
+           <th>Status</th>
+           <th>Waktu</th>
+         </tr>
+       </thead>
+       <tbody id="activityTable">
+       </tbody>
+     </table>
+  </div>
+</div>
+
+<script>
+  google.script.run.withSuccessHandler(function(data) {
+    document.getElementById('totalHadir').innerHTML = data.totalHadir + ' <span class="badge bg-soft-success text-success fs-6" style="background: #dcfce7;">+12%</span>';
+    document.getElementById('totalSakit').innerHTML = data.totalSakit + ' <span class="badge bg-soft-danger text-danger fs-6" style="background: #fee2e2;">-2%</span>';
+    document.getElementById('totalSakit2').textContent = data.totalSakit; // Sakit
+    document.getElementById('totalAlpa').textContent = data.totalAlpa;
+
+    // Chart
+    var ctx = document.getElementById('attendanceChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Hadir', 'Sakit', 'Alpa'],
+        datasets: [{
+          data: [data.totalHadir, data.totalSakit, data.totalAlpa],
+          backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
+        }]
+      }
+    });
+
+    // Ranking
+    var table = document.getElementById('rankingTable');
+    data.ranking.forEach(function(guru) {
+      var row = table.insertRow();
+      row.insertCell(0).textContent = guru.nama;
+      row.insertCell(1).textContent = guru.hadir;
+    });
+
+    // Activity Table (placeholder)
+    var activityTable = document.getElementById('activityTable');
+    // Simulate some data
+    var activities = [
+      {nama: 'Akbar Irwansya', unit: 'YPWI LUTIM', status: 'Datang', waktu: '07:12 AM'},
+      {nama: 'Siti Nurhaliza', unit: 'Unit A', status: 'Pulang', waktu: '04:30 PM'}
+    ];
+    activities.forEach(function(act) {
+      var row = activityTable.insertRow();
+      row.insertCell(0).textContent = act.nama;
+      row.insertCell(1).textContent = act.unit;
+      var statusCell = row.insertCell(2);
+      statusCell.innerHTML = '<span class="status-pill bg-success text-white">' + act.status + '</span>';
+      row.insertCell(3).textContent = act.waktu;
+    });
+  }).getDashboardData();
+</script>

@@ -1,0 +1,43 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<div class="container-fluid">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+    <h1 class="h2" style="color: #2d3436;"><i class="fas fa-database"></i> Database Guru/Staf</h1>
+  </div>
+
+  <div class="table-container">
+     <div class="d-flex justify-content-between mb-4">
+       <h5><i class="fas fa-users"></i> Daftar Guru/Staf</h5>
+       <button class="btn btn-outline-primary btn-sm btn-custom">Tambah Baru</button>
+     </div>
+     <div class="table-responsive">
+       <table class="table table-hover">
+         <thead class="table-light">
+           <tr>
+             <th>ID</th>
+             <th>Nama</th>
+             <th>Jabatan</th>
+             <th>Asal Sekolah</th>
+             <th>Aksi</th>
+           </tr>
+         </thead>
+         <tbody id="databaseTable">
+         </tbody>
+       </table>
+     </div>
+  </div>
+</div>
+
+<script>
+  google.script.run.withSuccessHandler(function(data) {
+    var table = document.getElementById('databaseTable');
+    data.forEach(function(row) {
+      var tr = table.insertRow();
+      tr.insertCell(0).textContent = row[0];
+      tr.insertCell(1).textContent = row[1];
+      tr.insertCell(2).textContent = row[2];
+      tr.insertCell(3).textContent = row[3];
+      var actions = tr.insertCell(4);
+      actions.innerHTML = '<button class="btn btn-sm btn-primary">Edit</button>';
+    });
+  }).getFilteredData('Database');
+</script>
