@@ -1,4 +1,9 @@
 function doGet(e) {
+  // Handle API calls via GET or POST
+  if (e.parameter.function) {
+    return handleApiCall(e);
+  }
+
   Logger.log('doGet called with parameter: ' + JSON.stringify(e));
   var page = e.parameter.page || 'auth';
   Logger.log('Page: ' + page);
@@ -26,6 +31,55 @@ function doGet(e) {
   } catch (error) {
     Logger.log('Error in doGet: ' + error.toString());
     return HtmlService.createHtmlOutput('Error: ' + error.toString()).setTitle('Error');
+  }
+}
+
+function doPost(e) {
+  return handleApiCall(e);
+}
+
+function handleApiCall(e) {
+  var functionName = e.parameter.function || e.parameters.function;
+  var parameters = e.parameter.parameters ? JSON.parse(e.parameter.parameters) : {};
+
+  Logger.log('API call: ' + functionName + ' with params: ' + JSON.stringify(parameters));
+
+  try {
+    var result;
+    switch(functionName) {
+      case 'login':
+        result = login(parameters.id, parameters.password);
+        break;
+      case 'getDashboardData':
+        result = getDashboardData();
+        break;
+      case 'getFilteredData':
+        result = getFilteredData(parameters.sheetName);
+        break;
+      case 'calculatePayroll':
+        result = calculatePayroll(parameters.month, parameters.year);
+        break;
+      case 'sendWASlip':
+        result = sendWASlip(parameters.id, parameters.month, parameters.year);
+        break;
+      default:
+        result = {error: 'Function not found'};
+    }
+
+    // Return JSON with CORS headers
+    return ContentService
+      .createTextOutput(JSON.stringify({response: result}))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader('Access-Control-Allow-Origin', '*')
+      .setHeader('Access-Control-Allow-Methods', 'GET, POST')
+      .setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  } catch (error) {
+    Logger.log('Error in API call: ' + error.toString());
+    return ContentService
+      .createTextOutput(JSON.stringify({error: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader('Access-Control-Allow-Origin', '*');
   }
 }
 
